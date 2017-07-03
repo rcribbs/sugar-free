@@ -57,8 +57,13 @@ parse_git_state() {
 # If inside a Git repository, print its branch and state
 git_prompt_string() {
   local git_where="$(parse_git_branch)"
-  [ -n "$git_where" ] && echo "$GIT_PROMPT_PREFIX%{$fg[white]%}${git_where#(refs/heads/|tags/)}$(parse_git_state)$GIT_PROMPT_SUFFIX"
+  [ -n "$git_where" ] && echo " $GIT_PROMPT_PREFIX%{$fg[white]%}${git_where#(refs/heads/|tags/)}$(parse_git_state)$GIT_PROMPT_SUFFIX"
 }
 
-PROMPT=$'%{$fg[blue]%}%n %{$reset_color%}%{$fg[green]%}[%~]%{$reset_color%} $(git_prompt_string) \
+_virtual_env_string() {
+    [ -n "$VIRTUAL_ENV" ] && local virtual_env="$(basename $VIRTUAL_ENV)"
+    [ -n "$virtual_env" ] && echo " <<$virtual_env>>"
+}
+
+PROMPT=$'%{$fg[blue]%}%n %{$reset_color%}%{$fg[green]%}[%~]%{$reset_color%}$(git_prompt_string)$(_virtual_env_string)\
 %{$fg[blue]%}%{$fg[blue]%}❯%{$reset_color%} '
